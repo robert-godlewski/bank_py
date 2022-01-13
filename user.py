@@ -1,59 +1,28 @@
+# Go to user_bank_accounts.py to run this file
+from bank_account import BankAccount
+
+
 class User:
-    def __init__(self, user_name, balance): 
+    def __init__(self, user_name):
         self.user_name = user_name
-        self.balance = balance
+        self.checking_account = BankAccount(int_rate=0.01, balance=0)
+        self.savings_account = BankAccount(int_rate=0.03, balance=0)
 
-    def make_deposit(self, amount): 
-        self.balance += amount
+    def make_deposit(self, account, amount): return account.deposit(amount)
+
+    def make_withdrawl(self, account, amount): return account.withdraw(amount)
+
+    def display_user_balance(self): 
+        details = f'''
+        User: {self.user_name}, Checking {self.checking_account.display_account_info()}\n
+        User: {self.user_name}, Savings {self.savings_account.display_account_info()}
+        '''
+        return details
+
+    def transfer_money(self, other_user, account_from, account_to, amount):
+        self.make_withdrawl(account_from, amount)
+        other_user.make_deposit(account_to, amount)
         return self
 
-    def make_withdrawl(self, amount):
-        self.balance -= amount
-        return self
-
-    def display_user_balance(self):
-        return "User: " + str(self.user_name) + ", Balance: " + str(self.balance)
-
-    def transfer_money(self, to_user, amount):
-        self.make_withdrawl(amount)
-        to_user.make_deposit(amount)
-        return self
-
-
-# Testing
-rob_bal = User('rob', 500)
-nate_bal = User('nate', 50)
-tristan_bal = User('tristan', 5)
-
-# Testing for Users
-'''
-rob_bal.make_deposit(10000)
-rob_bal.make_deposit(5000)
-rob_bal.make_withdrawl(1000)
-rob_bal.make_deposit(500)
-print(rob_bal.display_user_balance())
-
-nate_bal.make_deposit(500000)
-nate_bal.make_withdrawl(2000)
-nate_bal.make_deposit(5000)
-nate_bal.make_withdrawl(700)
-print(nate_bal.display_user_balance())
-
-tristan_bal.make_deposit(5000)
-tristan_bal.make_withdrawl(500)
-tristan_bal.make_withdrawl(5)
-tristan_bal.make_withdrawl(100)
-print(tristan_bal.display_user_balance())
-
-rob_bal.tansfer_money(tristan_bal, 100)
-print(rob_bal.display_user_balance())
-print(tristan_bal.display_user_balance())
-'''
-
-# Testing for Chaining Methods
-print(rob_bal.make_deposit(10000).make_deposit(5000).make_withdrawl(1000).make_deposit(500).display_user_balance())
-print(nate_bal.make_deposit(500000).make_withdrawl(2000).make_deposit(5000).make_withdrawl(700).display_user_balance())
-print(tristan_bal.make_deposit(5000).make_withdrawl(500).make_withdrawl(5).make_withdrawl(100).display_user_balance())
-
-print(rob_bal.transfer_money(tristan_bal, 100).display_user_balance())
-print(tristan_bal.display_user_balance())
+    def transfer_between_accounts(self, account_from, account_to, amount):
+        return self.transfer_money(self, account_from, account_to, amount)
